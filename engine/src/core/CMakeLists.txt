@@ -1,0 +1,27 @@
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(MODULE_FULL_NAME "${PROJECT_NAME_LOWERCASE}_${MODULE_NAME}")
+
+add_library(${MODULE_FULL_NAME} application.cpp)
+add_library(${PROJECT_NAME}::${MODULE_FULL_NAME} ALIAS ${MODULE_FULL_NAME})
+
+set_target_properties(
+  ${MODULE_FULL_NAME}
+  PROPERTIES
+    PUBLIC_HEADER
+    "${PROJECT_PUBLIC_HEADER_DIR}/${PROJECT_NAME_LOWERCASE}/${MODULE_NAME}/application.hpp"
+)
+
+target_include_directories(${MODULE_FULL_NAME} SYSTEM
+                           PRIVATE ${PROJECT_PUBLIC_HEADER_DIR})
+
+target_link_libraries(
+  ${MODULE_FULL_NAME} PRIVATE project_options project_warnings
+                              CONAN_PKG::spdlog)
+
+install(
+  TARGETS ${MODULE_FULL_NAME}
+  EXPORT ${PROJECT_NAME_UPPERCASE}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER
+    DESTINATION DESTINATION
+    "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME_LOWERCASE}/${MODULE_NAME}")

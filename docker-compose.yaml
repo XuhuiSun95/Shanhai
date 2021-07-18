@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+
+  shanhai:
+    build:
+      context: .
+      target: dev
+    command: tail -f /dev/null
+    restart: always
+    volumes:
+      - .:/usr/src
